@@ -507,27 +507,128 @@ function App() {
   // Render login form if not logged in
   if (!isLoggedIn) {
     return (
-      <div className="app">
-        <header className="app-header">
-          <h1>Champions League Fantasy League</h1>
+      <div className="app" style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <header className="app-header" style={{ background: 'none', boxShadow: 'none' }}>
+          <h1 style={{ color: '#fff', fontWeight: 800, letterSpacing: 1, fontSize: 38, marginBottom: 0, textShadow: '0 2px 12px #0006' }}>
+            <span role="img" aria-label="Trophy" style={{ marginRight: 12, fontSize: 44 }}>🏆</span>
+            Champions League Fantasy League
+          </h1>
         </header>
-        <main className="app-main">
-          <div style={{ maxWidth: 400, margin: '40px auto', padding: 24, border: '1px solid #eee', borderRadius: 12, background: '#fff', boxShadow: '0 2px 12px #0001' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Login</h2>
-            <form onSubmit={handleLogin}>
-              <div style={{ marginBottom: 16 }}>
-                <label>Username:</label>
-                <input type="text" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} required />
+        <main className="app-main" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+          <div style={{
+            maxWidth: 420,
+            width: '100%',
+            margin: '40px auto',
+            padding: 36,
+            borderRadius: 24,
+            background: 'rgba(255,255,255,0.97)',
+            boxShadow: '0 8px 32px #0002, 0 1.5px 8px #1e3c7240',
+            position: 'relative',
+            overflow: 'hidden',
+            animation: 'fadeIn 1s',
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
+              <span style={{ fontSize: 60, display: 'block', marginBottom: 8 }}>⚽️</span>
+              <h2 style={{ fontWeight: 700, color: '#1e3c72', margin: 0, fontSize: 28 }}>Welcome Back!</h2>
+              <div style={{ color: '#2a5298', fontSize: 16, marginTop: 8, marginBottom: 0 }}>
+                Log in to build your dream team and play!
               </div>
-              <div style={{ marginBottom: 16 }}>
-                <label>Password:</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} required />
+            </div>
+            <form onSubmit={handleLogin} style={{ marginTop: 24 }}>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontWeight: 600, color: '#1e3c72', display: 'block', marginBottom: 6 }}>Username</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: 8,
+                    border: '1.5px solid #b0c4de',
+                    fontSize: 17,
+                    outline: 'none',
+                    transition: 'border 0.2s',
+                    boxShadow: '0 1px 4px #1e3c7210',
+                  }}
+                  onFocus={e => e.target.style.border = '1.5px solid #2a5298'}
+                  onBlur={e => e.target.style.border = '1.5px solid #b0c4de'}
+                  required
+                  autoComplete="username"
+                />
               </div>
-              {loginError && <div style={{ color: 'red', marginBottom: 16 }}>{loginError}</div>}
-              <button type="submit" style={{ width: '100%', padding: 12, background: '#007bff', color: '#fff', border: 'none', borderRadius: 6, fontSize: 16, cursor: 'pointer' }}>Login</button>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontWeight: 600, color: '#1e3c72', display: 'block', marginBottom: 6 }}>Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: 8,
+                    border: '1.5px solid #b0c4de',
+                    fontSize: 17,
+                    outline: 'none',
+                    transition: 'border 0.2s',
+                    boxShadow: '0 1px 4px #1e3c7210',
+                  }}
+                  onFocus={e => e.target.style.border = '1.5px solid #2a5298'}
+                  onBlur={e => e.target.style.border = '1.5px solid #b0c4de'}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              {loginError && <div style={{ color: '#dc3545', marginBottom: 16, fontWeight: 600, textAlign: 'center' }}>{loginError}</div>}
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  padding: '14px 0',
+                  background: 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  fontSize: 18,
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px #1e3c7240',
+                  transition: 'background 0.3s, transform 0.2s',
+                  marginTop: 8,
+                  marginBottom: 4,
+                  outline: 'none',
+                  animation: 'popIn 0.7s',
+                }}
+                onMouseOver={e => e.target.style.background = 'linear-gradient(90deg, #2a5298 0%, #1e3c72 100%)'}
+                onMouseOut={e => e.target.style.background = 'linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)'}
+              >
+                Log In
+              </button>
             </form>
+            <div style={{ textAlign: 'center', marginTop: 18, color: '#888', fontSize: 15 }}>
+              <span role="img" aria-label="lock">🔒</span> Your credentials are safe and never shared.
+            </div>
           </div>
         </main>
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes popIn {
+            0% { transform: scale(0.95); }
+            60% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+          }
+        `}</style>
       </div>
     );
   }
