@@ -5,7 +5,6 @@ import MyTeam from './MyTeam';
 import StartingXI from './StartingXI';
 import ChampionsLogo from './ChampionsLogo';
 import PlayerGuesser from './PlayerGuesser';
-import PlayerListBasicAuth from './PlayerListBasicAuth';
 import './App.css';
 
 const FORMATIONS = {
