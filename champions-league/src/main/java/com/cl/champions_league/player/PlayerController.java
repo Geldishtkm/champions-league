@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/champ/v1/player")
-@CrossOrigin(origins = "*")  // Allow React frontend origin
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -43,7 +42,7 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<Player> addPlayer(@RequestBody Player player){
+    public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
         Player createdPlayer = playerService.addPlayer(player);
         return new ResponseEntity<>(createdPlayer, HttpStatus.CREATED);
     }
@@ -64,13 +63,6 @@ public class PlayerController {
         return new ResponseEntity<>("Player deleted successfully", HttpStatus.OK);
     }
 
-    // === NEW ENDPOINT for the true/false game ===
-
-    /**
-     * GET /champ/v1/player/game/random
-     * Returns random player info without the name for guessing game,
-     * along with false name and team options.
-     */
     @GetMapping("/game/random")
     public ResponseEntity<Map<String, Object>> getRandomPlayerForGame() {
         Map<String, Object> playerData = playerService.getRandomPlayerWithoutName();
