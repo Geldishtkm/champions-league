@@ -18,6 +18,8 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret' }
 
     // Fetch other players for name questions
     try {
+      console.log('Using credentials:', username, password);
+      console.log('Auth header:', 'Basic ' + btoa(username + ':' + password));
       const response = await fetch('http://localhost:8080/champ/v1/player', {
         headers: {
           'Authorization': authHeader,
@@ -53,6 +55,8 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret' }
 
     // Fetch teams for team questions
     try {
+      console.log('Using credentials:', username, password);
+      console.log('Auth header:', 'Basic ' + btoa(username + ':' + password));
       const response = await fetch('http://localhost:8080/champ/v1/player', {
         headers: {
           'Authorization': authHeader,

@@ -151,18 +151,28 @@ const LoadingSpinner = () => (
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '40px',
-    color: '#fff'
+    padding: '60px',
+    color: '#fff',
+    flexDirection: 'column',
+    gap: '20px',
   }}>
     <div style={{
-      width: '40px',
-      height: '40px',
-      border: '4px solid rgba(255,255,255,0.3)',
-      borderTop: '4px solid #007bff',
+      width: '60px',
+      height: '60px',
+      border: '4px solid rgba(255,255,255,0.1)',
+      borderTop: '4px solid #667eea',
       borderRadius: '50%',
-      animation: 'spin 1s linear infinite'
+      animation: 'spin 1s linear infinite',
+      boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
     }}></div>
-    <span style={{ marginLeft: '12px', fontSize: '16px' }}>Loading players...</span>
+    <span style={{ 
+      fontSize: '18px', 
+      fontWeight: 500,
+      color: 'rgba(255,255,255,0.9)',
+      textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+    }}>
+      Loading players...
+    </span>
   </div>
 );
 
@@ -170,17 +180,57 @@ const LoadingSpinner = () => (
 const ErrorState = ({ message, onRetry }) => (
   <div style={{
     textAlign: 'center',
-    padding: '40px',
-    color: '#fff'
+    padding: '60px',
+    color: '#fff',
+    background: 'rgba(229,62,62,0.1)',
+    borderRadius: '20px',
+    border: '1px solid rgba(229,62,62,0.2)',
+    backdropFilter: 'blur(10px)',
   }}>
-    <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
-    <h3 style={{ marginBottom: '16px' }}>Unable to load players</h3>
-    <p style={{ marginBottom: '24px', opacity: 0.8 }}>{message}</p>
+    <div style={{ 
+      fontSize: '60px', 
+      marginBottom: '20px',
+      animation: 'bounce 2s ease-in-out infinite',
+    }}>⚠️</div>
+    <h3 style={{ 
+      marginBottom: '20px',
+      fontSize: '24px',
+      fontWeight: 700,
+      color: '#fc8181',
+    }}>
+      Unable to load players
+    </h3>
+    <p style={{ 
+      marginBottom: '30px', 
+      opacity: 0.8,
+      fontSize: '16px',
+      lineHeight: 1.6,
+    }}>
+      {message}
+    </p>
     {onRetry && (
       <button 
         onClick={onRetry}
-        className="btn btn-primary"
-        style={{ padding: '12px 24px' }}
+        style={{
+          padding: '14px 28px',
+          fontSize: '16px',
+          fontWeight: 600,
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: '#fff',
+          border: 'none',
+          cursor: 'pointer',
+          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+          transition: 'all 0.3s ease',
+        }}
+        onMouseOver={e => {
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+        }}
+        onMouseOut={e => {
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
+        }}
       >
         Try Again
       </button>
@@ -192,12 +242,33 @@ const ErrorState = ({ message, onRetry }) => (
 const EmptyState = ({ message }) => (
   <div style={{
     textAlign: 'center',
-    padding: '40px',
-    color: '#fff'
+    padding: '60px',
+    color: '#fff',
+    background: 'rgba(255,255,255,0.05)',
+    borderRadius: '20px',
+    border: '1px solid rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(10px)',
   }}>
-    <div style={{ fontSize: '48px', marginBottom: '16px' }}>📋</div>
-    <h3 style={{ marginBottom: '16px' }}>No players found</h3>
-    <p style={{ opacity: 0.8 }}>{message}</p>
+    <div style={{ 
+      fontSize: '60px', 
+      marginBottom: '20px',
+      animation: 'pulse 2s ease-in-out infinite',
+    }}>📋</div>
+    <h3 style={{ 
+      marginBottom: '20px',
+      fontSize: '24px',
+      fontWeight: 700,
+      color: 'rgba(255,255,255,0.9)',
+    }}>
+      No players found
+    </h3>
+    <p style={{ 
+      opacity: 0.8,
+      fontSize: '16px',
+      lineHeight: 1.6,
+    }}>
+      {message}
+    </p>
   </div>
 );
 
@@ -230,45 +301,229 @@ const PlayerCard = ({ player, onAddToBench, onAddToStartingXI, onDeletePlayer, i
   };
 
   return (
-    <div className={`player-card ${isInStartingXI ? 'in-starting-xi' : ''}`}>
-      <div className="player-header">
-        <span className="player-name">{player.name}</span>
-        <span className="player-id" style={{ fontSize: 12, color: '#888', marginLeft: 8 }}>ID: {player.id}</span>
-        <span className="player-position">{positionIcons[player.position] || ''} {player.position}</span>
-        {isInStartingXI && (
-          <span className="starting-xi-badge" title="In Starting XI">⚽</span>
-        )}
-      </div>
-      <div className="player-details">
-        <span className="player-team">🏟️ {player.team}</span>
-        <span className="player-nationality">
-          <span style={{ fontSize: 22, marginRight: 6 }}>{getFlagEmoji(player.nationality)}</span>
-          {player.nationality}
+    <div 
+      className={`player-card ${isInStartingXI ? 'in-starting-xi' : ''}`}
+      style={{
+        background: isInStartingXI 
+          ? 'linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.05) 100%)'
+          : 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '16px',
+        padding: '20px',
+        border: isInStartingXI 
+          ? '1px solid rgba(255,215,0,0.3)'
+          : '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      onMouseOver={e => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.2)';
+      }}
+      onMouseOut={e => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+      }}
+    >
+      {isInStartingXI && (
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          background: 'linear-gradient(135deg, #ffd700, #ffed4e)',
+          color: '#000',
+          padding: '4px 8px',
+          borderRadius: '12px',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          animation: 'pulse 2s ease-in-out infinite',
+        }}>
+          ⚽ Starting XI
+        </div>
+      )}
+      
+      <div className="player-header" style={{
+        marginBottom: '15px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <span className="player-name" style={{
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#fff',
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+          }}>
+            {player.name}
+          </span>
+          <span className="player-position" style={{
+            fontSize: '16px',
+            color: 'rgba(255,255,255,0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}>
+            {positionIcons[player.position] || ''} {player.position}
+          </span>
+        </div>
+        <span className="player-id" style={{
+          fontSize: '12px',
+          color: 'rgba(255,255,255,0.6)',
+          fontFamily: 'monospace',
+        }}>
+          ID: {player.id}
         </span>
       </div>
-      <div className="player-actions">
+      
+      <div className="player-details" style={{
+        marginBottom: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 12px',
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}>
+          <span style={{ fontSize: '16px' }}>🏟️</span>
+          <span className="player-team" style={{
+            color: 'rgba(255,255,255,0.9)',
+            fontWeight: '500',
+          }}>
+            {player.team}
+          </span>
+        </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 12px',
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.1)',
+        }}>
+          <span style={{ fontSize: '20px' }}>{getFlagEmoji(player.nationality)}</span>
+          <span className="player-nationality" style={{
+            color: 'rgba(255,255,255,0.9)',
+            fontWeight: '500',
+          }}>
+            {player.nationality}
+          </span>
+        </div>
+      </div>
+      
+      <div className="player-actions" style={{
+        display: 'flex',
+        gap: '10px',
+        flexWrap: 'wrap',
+      }}>
         <button 
-          className="btn btn-success" 
           onClick={handleAddToBench}
           aria-label={`Add ${player.name} to bench`}
+          style={{
+            padding: '10px 16px',
+            fontSize: '14px',
+            fontWeight: '600',
+            borderRadius: '8px',
+            background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(40, 167, 69, 0.3)',
+            transition: 'all 0.3s ease',
+            flex: 1,
+            minWidth: '120px',
+          }}
+          onMouseOver={e => {
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.4)';
+          }}
+          onMouseOut={e => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 4px 16px rgba(40, 167, 69, 0.3)';
+          }}
         >
           Add to Bench
         </button>
+        
         {onAddToStartingXI && (
           <button 
-            className={`btn ${isInStartingXI ? 'btn-warning' : 'btn-info'}`}
             onClick={handleAddToStartingXI}
             aria-label={isInStartingXI ? `${player.name} already in Starting XI` : `Add ${player.name} to Starting XI`}
             title={isInStartingXI ? 'Already in Starting XI' : 'Add to Starting XI'}
+            style={{
+              padding: '10px 16px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '8px',
+              background: isInStartingXI 
+                ? 'linear-gradient(135deg, #ffc107 0%, #ffca2c 100%)'
+                : 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
+              color: isInStartingXI ? '#000' : '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: isInStartingXI 
+                ? '0 4px 16px rgba(255, 193, 7, 0.3)'
+                : '0 4px 16px rgba(23, 162, 184, 0.3)',
+              transition: 'all 0.3s ease',
+              flex: 1,
+              minWidth: '120px',
+            }}
+            onMouseOver={e => {
+              if (!isInStartingXI) {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 6px 20px rgba(23, 162, 184, 0.4)';
+              }
+            }}
+            onMouseOut={e => {
+              if (!isInStartingXI) {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 16px rgba(23, 162, 184, 0.3)';
+              }
+            }}
           >
             {isInStartingXI ? 'In Starting XI' : 'Add to Starting XI'}
           </button>
         )}
+        
         {showDeleteButton && onDeletePlayer && (
           <button 
-            className="btn btn-danger" 
             onClick={handleDelete}
             aria-label={`Delete ${player.name}`}
+            style={{
+              padding: '10px 16px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 16px rgba(220, 53, 69, 0.3)',
+              transition: 'all 0.3s ease',
+              flex: 1,
+              minWidth: '120px',
+            }}
+            onMouseOver={e => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 16px rgba(220, 53, 69, 0.3)';
+            }}
           >
             Delete
           </button>
@@ -349,7 +604,19 @@ const PlayerList = ({
         flexWrap: 'wrap',
       }}>
         {/* Teams Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 280 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          width: 280,
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '20px',
+          padding: '20px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          transition: 'all 0.3s ease',
+        }}>
           <img
             src={realMadridTeam}
             alt="Real Madrid Team - Click to view all clubs"
@@ -358,45 +625,68 @@ const PlayerList = ({
               width: 280,
               height: 180,
               objectFit: 'cover',
-              borderRadius: 24,
-              boxShadow: '0 4px 24px #0002',
-              marginBottom: 24,
-              marginTop: 16,
+              borderRadius: 16,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              marginBottom: 20,
               cursor: 'pointer',
-              transition: 'transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s',
+              transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
             }}
             onClick={() => setView('clubs')}
             onKeyDown={(e) => e.key === 'Enter' && setView('clubs')}
             tabIndex={0}
             role="button"
             aria-label="View all clubs"
+            onMouseOver={e => {
+              e.target.style.transform = 'scale(1.05) translateY(-5px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'scale(1) translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+            }}
           />
           <button
             style={{
-              marginTop: 18,
-              padding: '12px 32px',
-              fontSize: 18,
+              padding: '14px 32px',
+              fontSize: 16,
               fontWeight: 700,
-              borderRadius: 14,
-              background: 'linear-gradient(90deg, #007bff 0%, #00c6ff 100%)',
+              borderRadius: 12,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: '#fff',
               border: 'none',
-              boxShadow: '0 2px 12px #007bff44',
+              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
               cursor: 'pointer',
-              transition: 'background 0.3s, transform 0.2s',
+              transition: 'all 0.3s ease',
             }}
             onClick={() => setView('clubs')}
-            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-            onFocus={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onBlur={e => e.currentTarget.style.transform = 'scale(1)'}
+            onMouseOver={e => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
+            }}
             aria-label="View all clubs"
           >
             View Clubs
           </button>
         </div>
+        
         {/* Position Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 280 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          width: 280,
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '20px',
+          padding: '20px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          transition: 'all 0.3s ease',
+        }}>
           <img
             src={defensaImg}
             alt="Player Positions - Click to view all positions"
@@ -405,45 +695,68 @@ const PlayerList = ({
               width: 280,
               height: 180,
               objectFit: 'cover',
-              borderRadius: 24,
-              boxShadow: '0 4px 24px #0002',
-              marginBottom: 24,
-              marginTop: 16,
+              borderRadius: 16,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              marginBottom: 20,
               cursor: 'pointer',
-              transition: 'transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s',
+              transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
             }}
             onClick={() => setView('positions')}
             onKeyDown={(e) => e.key === 'Enter' && setView('positions')}
             tabIndex={0}
             role="button"
             aria-label="View all positions"
+            onMouseOver={e => {
+              e.target.style.transform = 'scale(1.05) translateY(-5px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'scale(1) translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+            }}
           />
           <button
             style={{
-              marginTop: 18,
-              padding: '12px 32px',
-              fontSize: 18,
+              padding: '14px 32px',
+              fontSize: 16,
               fontWeight: 700,
-              borderRadius: 14,
-              background: 'linear-gradient(90deg, #007bff 0%, #00c6ff 100%)',
+              borderRadius: 12,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: '#fff',
               border: 'none',
-              boxShadow: '0 2px 12px #007bff44',
+              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
               cursor: 'pointer',
-              transition: 'background 0.3s, transform 0.2s',
+              transition: 'all 0.3s ease',
             }}
             onClick={() => setView('positions')}
-            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-            onFocus={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onBlur={e => e.currentTarget.style.transform = 'scale(1)'}
+            onMouseOver={e => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
+            }}
             aria-label="View all positions"
           >
             View Positions
           </button>
         </div>
+        
         {/* Nation Section */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 280 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          width: 280,
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '20px',
+          padding: '20px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          transition: 'all 0.3s ease',
+        }}>
           <img
             src={nationImg}
             alt="Player Nations - Click to view all nations"
@@ -452,38 +765,48 @@ const PlayerList = ({
               width: 280,
               height: 180,
               objectFit: 'cover',
-              borderRadius: 24,
-              boxShadow: '0 4px 24px #0002',
-              marginBottom: 24,
-              marginTop: 16,
+              borderRadius: 16,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              marginBottom: 20,
               cursor: 'pointer',
-              transition: 'transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s',
+              transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
             }}
             onClick={() => setView('nations')}
             onKeyDown={(e) => e.key === 'Enter' && setView('nations')}
             tabIndex={0}
             role="button"
             aria-label="View all nations"
+            onMouseOver={e => {
+              e.target.style.transform = 'scale(1.05) translateY(-5px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'scale(1) translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+            }}
           />
           <button
             style={{
-              marginTop: 18,
-              padding: '12px 32px',
-              fontSize: 18,
+              padding: '14px 32px',
+              fontSize: 16,
               fontWeight: 700,
-              borderRadius: 14,
-              background: 'linear-gradient(90deg, #007bff 0%, #00c6ff 100%)',
+              borderRadius: 12,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: '#fff',
               border: 'none',
-              boxShadow: '0 2px 12px #007bff44',
+              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
               cursor: 'pointer',
-              transition: 'background 0.3s, transform 0.2s',
+              transition: 'all 0.3s ease',
             }}
             onClick={() => setView('nations')}
-            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-            onFocus={e => e.currentTarget.style.transform = 'scale(1.04)'}
-            onBlur={e => e.currentTarget.style.transform = 'scale(1)'}
+            onMouseOver={e => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.6)';
+            }}
+            onMouseOut={e => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 8px 32px rgba(102, 126, 234, 0.4)';
+            }}
             aria-label="View all nations"
           >
             View Nations
@@ -764,13 +1087,123 @@ const PlayerList = ({
     const duplicates = Object.entries(idCounts).filter(([id, count]) => count > 1);
     if (duplicates.length > 0) {
       duplicateIdWarning = (
-        <div style={{ color: 'red', fontWeight: 'bold', marginBottom: 16 }}>
-          Warning: Duplicate player IDs detected in this view! IDs: {duplicates.map(([id]) => id).join(', ')}
+        <div style={{ 
+          color: '#fc8181', 
+          fontWeight: 'bold', 
+          marginBottom: 16,
+          padding: '12px 16px',
+          background: 'rgba(229,62,62,0.1)',
+          borderRadius: '8px',
+          border: '1px solid rgba(229,62,62,0.2)',
+          backdropFilter: 'blur(10px)',
+        }}>
+          ⚠️ Warning: Duplicate player IDs detected in this view! IDs: {duplicates.map(([id]) => id).join(', ')}
         </div>
       );
     }
   }
-  return <div className="player-list-container">{duplicateIdWarning}{content}</div>;
+
+  // Add search interface for player views
+  const searchInterface = (view === 'players' || view === 'players-by-position' || view === 'players-by-nation') && (
+    <div style={{
+      marginBottom: '30px',
+      background: 'rgba(255,255,255,0.05)',
+      borderRadius: '16px',
+      padding: '20px',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255,255,255,0.1)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '15px',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{
+          flex: 1,
+          minWidth: '250px',
+          position: 'relative',
+        }}>
+          <input
+            type="text"
+            value={searchTerm || ''}
+            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+            placeholder="Search players by name, team, or nationality..."
+            style={{
+              width: '100%',
+              padding: '14px 20px 14px 50px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              fontSize: '16px',
+              outline: 'none',
+              transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)',
+            }}
+            onFocus={e => {
+              e.target.style.border = '1px solid rgba(102, 126, 234, 0.5)';
+              e.target.style.background = 'rgba(255,255,255,0.15)';
+              e.target.style.transform = 'scale(1.02)';
+            }}
+            onBlur={e => {
+              e.target.style.border = '1px solid rgba(255,255,255,0.2)';
+              e.target.style.background = 'rgba(255,255,255,0.1)';
+              e.target.style.transform = 'scale(1)';
+            }}
+          />
+          <span style={{
+            position: 'absolute',
+            left: '18px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            fontSize: '18px',
+            color: 'rgba(255,255,255,0.7)',
+          }}>
+            🔍
+          </span>
+        </div>
+        {searchTerm && (
+          <button
+            onClick={() => onSearchChange && onSearchChange('')}
+            style={{
+              padding: '10px 16px',
+              borderRadius: '8px',
+              background: 'rgba(229,62,62,0.2)',
+              color: '#fc8181',
+              border: '1px solid rgba(229,62,62,0.3)',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 600,
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={e => {
+              e.target.style.background = 'rgba(229,62,62,0.3)';
+              e.target.style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={e => {
+              e.target.style.background = 'rgba(229,62,62,0.2)';
+              e.target.style.transform = 'translateY(0)';
+            }}
+          >
+            Clear
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="player-list-container" style={{
+      color: '#fff',
+      position: 'relative',
+    }}>
+      {duplicateIdWarning}
+      {searchInterface}
+      {content}
+    </div>
+  );
 };
 
 export default PlayerList; 
