@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], onAddToBench, onAddToFrontendStartingXI }) => {
+const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], onAddToBench, onAddToFrontendStartingXI, fetchPlayers }) => {
   const [name, setName] = useState('');
   const [position, setPosition] = useState('Forward');
   const [team, setTeam] = useState('');
@@ -69,9 +69,8 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
   };
 
   // Suggestion component
-  const SuggestionList = ({ suggestions, onSelect, onClose }) => {
+  const SuggestionList = ({ suggestions, onSelect, onClose, field }) => {
     if (suggestions.length === 0) return null;
-    
     return (
       <div style={{
         position: 'absolute',
@@ -96,7 +95,24 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
               fontSize: '14px'
             }}
             onMouseDown={() => {
-              onSelect(suggestion);
+              if (field === 'name') {
+                // Auto-fill all fields from matched player
+                const matchedPlayer = players.find(p => p.name === suggestion);
+                if (matchedPlayer) {
+                  setName(matchedPlayer.name);
+                  setPosition(matchedPlayer.position || 'Forward');
+                  setTeam(matchedPlayer.team || '');
+                  setNationality(matchedPlayer.nationality || '');
+                } else {
+                  setName(suggestion);
+                }
+              } else if (field === 'team') {
+                setTeam(suggestion);
+              } else if (field === 'position') {
+                setPosition(suggestion);
+              } else if (field === 'nationality') {
+                setNationality(suggestion);
+              }
               onClose();
             }}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
@@ -148,6 +164,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
         setPosition('Forward');
         setTeam('');
         setNationality('');
+        if (fetchPlayers) await fetchPlayers(); // Refresh player list after add
       }
     } catch (error) {
       showMessage('error', 'An error occurred. Please try again.');
@@ -190,6 +207,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
       setPosition('Forward');
       setTeam('');
       setNationality('');
+      if (fetchPlayers) await fetchPlayers(); // Refresh player list after add
     } catch (error) {
       showMessage('error', 'An error occurred. Please try again.');
     } finally {
@@ -255,6 +273,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
             suggestions={getFilteredNames()}
             onSelect={setName}
             onClose={() => setShowNameSuggestions(false)}
+            field="name"
           />
         )}
       </div>
@@ -278,6 +297,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
             suggestions={getFilteredPositions()}
             onSelect={setPosition}
             onClose={() => setShowPositionSuggestions(false)}
+            field="position"
           />
         )}
       </div>
@@ -301,6 +321,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
             suggestions={getFilteredTeams()}
             onSelect={setTeam}
             onClose={() => setShowTeamSuggestions(false)}
+            field="team"
           />
         )}
       </div>
@@ -324,6 +345,7 @@ const PlayerForm = ({ onAddPlayer, onEditPlayer, editingPlayer, players = [], on
             suggestions={getFilteredNationalities()}
             onSelect={setNationality}
             onClose={() => setShowNationalitySuggestions(false)}
+            field="nationality"
           />
         )}
       </div>

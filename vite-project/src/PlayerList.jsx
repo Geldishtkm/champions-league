@@ -1103,96 +1103,7 @@ const PlayerList = ({
     }
   }
 
-  // Add search interface for player views
-  const searchInterface = (view === 'players' || view === 'players-by-position' || view === 'players-by-nation') && (
-    <div style={{
-      marginBottom: '30px',
-      background: 'rgba(255,255,255,0.05)',
-      borderRadius: '16px',
-      padding: '20px',
-      backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255,255,255,0.1)',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-    }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '15px',
-        flexWrap: 'wrap',
-      }}>
-        <div style={{
-          flex: 1,
-          minWidth: '250px',
-          position: 'relative',
-        }}>
-          <input
-            type="text"
-            value={searchTerm || ''}
-            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-            placeholder="Search players by name, team, or nationality..."
-            style={{
-              width: '100%',
-              padding: '14px 20px 14px 50px',
-              borderRadius: '12px',
-              border: '1px solid rgba(255,255,255,0.2)',
-              background: 'rgba(255,255,255,0.1)',
-              color: '#fff',
-              fontSize: '16px',
-              outline: 'none',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(10px)',
-            }}
-            onFocus={e => {
-              e.target.style.border = '1px solid rgba(102, 126, 234, 0.5)';
-              e.target.style.background = 'rgba(255,255,255,0.15)';
-              e.target.style.transform = 'scale(1.02)';
-            }}
-            onBlur={e => {
-              e.target.style.border = '1px solid rgba(255,255,255,0.2)';
-              e.target.style.background = 'rgba(255,255,255,0.1)';
-              e.target.style.transform = 'scale(1)';
-            }}
-          />
-          <span style={{
-            position: 'absolute',
-            left: '18px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            fontSize: '18px',
-            color: 'rgba(255,255,255,0.7)',
-          }}>
-            🔍
-          </span>
-        </div>
-        {searchTerm && (
-          <button
-            onClick={() => onSearchChange && onSearchChange('')}
-            style={{
-              padding: '10px 16px',
-              borderRadius: '8px',
-              background: 'rgba(229,62,62,0.2)',
-              color: '#fc8181',
-              border: '1px solid rgba(229,62,62,0.3)',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 600,
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={e => {
-              e.target.style.background = 'rgba(229,62,62,0.3)';
-              e.target.style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={e => {
-              e.target.style.background = 'rgba(229,62,62,0.2)';
-              e.target.style.transform = 'translateY(0)';
-            }}
-          >
-            Clear
-          </button>
-        )}
-      </div>
-    </div>
-  );
+  // Remove the search input and its clear button (searchInterface)
 
   return (
     <div className="player-list-container" style={{
@@ -1200,7 +1111,6 @@ const PlayerList = ({
       position: 'relative',
     }}>
       {duplicateIdWarning}
-      {searchInterface}
       {content}
     </div>
   );

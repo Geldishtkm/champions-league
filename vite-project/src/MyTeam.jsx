@@ -415,13 +415,8 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
           <h3 style={{ textAlign: 'center', color: '#1B1F3B', marginBottom: 16 }}>Bench ({bench.length}/23)</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center' }}>
             {bench.map(player => {
-              // Find all empty slots (no position restrictions)
-              const allSlots = myTeam
-                .map((slot, idx) => {
-                  // Return all slots - no position restrictions
-                  return { idx, label: formationArr[idx].label, player: slot.player };
-                })
-                .filter(Boolean);
+              // Show only main info (name, team, position) if nationality is empty (added via Add Player form)
+              const isMinimal = !player.nationality;
               return (
                 <div key={player.id} style={{
                   background: '#e0e7ef',
@@ -445,16 +440,11 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
                     {player.name}
                   </div>
                   <div style={{ fontSize: 13, color: '#555' }}>{player.team}</div>
-                  <div style={{ fontSize: 16, marginTop: 2 }}>{getFlagEmoji(player.nationality)}</div>
+                  <div style={{ fontSize: 15, color: '#007bff', marginTop: 2 }}>
+                    {isMinimal ? player.position : `${positionIcons[player.position]} ${player.position}`}
+                  </div>
+                  {/* Remove nationality and flag for minimal info */}
                   <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-                    <button
-                      onClick={() => setSlotPicker({ open: true, player })}
-                      style={{ fontSize: 12, background: '#28a745', color: '#fff', border: 'none', borderRadius: 8, padding: '2px 10px', cursor: allSlots.length > 0 ? 'pointer' : 'not-allowed', opacity: allSlots.length > 0 ? 1 : 0.5 }}
-                      disabled={allSlots.length === 0}
-                      aria-label={`Add ${player.name} to formation`}
-                    >
-                      Add
-                    </button>
                     <button 
                       onClick={() => onRemoveFromBench(player.id)} 
                       style={{ fontSize: 12, background: '#ff4d4f', color: '#fff', border: 'none', borderRadius: 8, padding: '2px 10px', cursor: 'pointer' }}
