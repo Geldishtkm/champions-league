@@ -6,6 +6,7 @@ import StartingXI from './StartingXI';
 import ChampionsLogo from './ChampionsLogo';
 import PlayerGuesser from './PlayerGuesser';
 import Register from './Register';
+import ChampionsSection from './ChampionsSection';
 import './App.css';
 
 const FORMATIONS = {
@@ -67,6 +68,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [showRegister, setShowRegister] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const showMessage = (type, text) => {
     setMessage({ type, text });
@@ -87,7 +89,12 @@ function App() {
       if (response.ok) {
         setIsLoggedIn(true);
         setActiveTab('player-list');
-        // Optionally show a success message
+        // Fetch userId after successful login
+        const userInfoRes = await fetch(`http://localhost:8080/api/users/by-username/${username}`);
+        if (userInfoRes.ok) {
+          const userInfo = await userInfoRes.json();
+          setUserId(userInfo.id);
+        }
       } else {
         setLoginError(text); // Shows "Username not found" or "Incorrect password"
       }
@@ -604,7 +611,12 @@ function App() {
           </div>
         );
       case 'player-guesser':
-        return <PlayerGuesser players={players} username={username} password={password} />;
+        return <PlayerGuesser
+          players={players}
+          username={username}
+          password={password}
+          userId={userId}
+        />;
       case 'my-team':
         return (
           <MyTeam 
@@ -822,6 +834,9 @@ function App() {
         </div>
       </header>
 
+      <ChampionsLogo />
+      <ChampionsSection />
+
       {/* Global message display */}
       {message.text && (
         <div className={`global-message ${message.type}`} style={{
@@ -880,7 +895,7 @@ function App() {
               justifyContent: 'center',
               transition: 'all 0.3s ease',
             }}
-            onMouseOver={e => e.target.style.background = 'rgba(229,62,62,0.2)'}
+            onMouseOver={e => e.target.style.background = 'rgba(229,62,62,0.2)'}  
             onMouseOut={e => e.target.style.background = 'none'}
             aria-label="Dismiss error message"
           >
