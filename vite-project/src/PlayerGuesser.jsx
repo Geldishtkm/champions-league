@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret' }) => {
+const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', userId }) => {
+  console.log('userId at component:', userId);
   const [currentGameData, setCurrentGameData] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [result, setResult] = useState(null); // true | false | null
@@ -136,14 +137,41 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret' }
     }
   };
 
+  // Function to submit guess record to backend
+  const submitGuessToBackend = async (guess, score) => {
+    console.log('Submitting guess to backend:', guess, score, userId);
+    if (!userId) return;
+    try {
+      const response = await fetch('http://localhost:8080/api/gamerecords', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guess,
+          score,
+          userId
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to save guess');
+      }
+      return await response.json();
+    } catch (err) {
+      console.error('Error saving guess:', err);
+    }
+  };
+
   // Submit true/false guess
   const submitGuess = (userAnswer) => {
     if (!currentQuestion) return;
 
     setLoading(true);
     setError(null);
-    
+
+    // Detailed logs for debugging
+    console.log('userAnswer:', userAnswer, typeof userAnswer);
+    console.log('currentQuestion.answer:', currentQuestion.answer, typeof currentQuestion.answer);
     const isCorrect = userAnswer === currentQuestion.answer;
+    console.log('isCorrect:', isCorrect);
     console.log('Question validation:', {
       userAnswer: userAnswer,
       correctAnswer: currentQuestion.answer,
@@ -155,7 +183,14 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret' }
     // Update score
     setTotalGuesses(prev => prev + 1);
     if (isCorrect) {
-      setScore(prev => prev + 1);
+      console.log('isCorrect is true, will call setScore');
+      setScore(prev => {
+        const newScore = prev + 1;
+        // Save the guess to backend
+        console.log('Calling submitGuessToBackend from submitGuess');
+        submitGuessToBackend(currentQuestion.text, newScore);
+        return newScore;
+      });
     }
     
     setLoading(false);
