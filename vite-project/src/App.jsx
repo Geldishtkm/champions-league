@@ -6,6 +6,7 @@ import StartingXI from './StartingXI';
 import ChampionsLogo from './ChampionsLogo';
 import PlayerGuesser from './PlayerGuesser';
 import Register from './Register';
+import Login from './Login';
 import ChampionsSection from './ChampionsSection';
 import './App.css';
 
@@ -710,65 +711,58 @@ function App() {
             filter: 'blur(2px)',
           }} />
           {showRegister ? (
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              {/* Trophy accent */}
-              <div style={{ position: 'absolute', top: -56, left: '50%', transform: 'translateX(-50%)', zIndex: 3, pointerEvents: 'none' }}>
-                <span style={{ fontSize: 40, color: '#e6c463', filter: 'drop-shadow(0 0 8px #e6c46388)' }}>🏆</span>
-              </div>
-              <div style={{
-                maxWidth: 420,
-                width: '100%',
-                margin: '40px auto',
-                padding: 40,
-                borderRadius: 32,
-                background: 'linear-gradient(135deg, #f6e27a 0%, #6441a5 100%)',
-                boxShadow: '0 8px 40px 0 #2a084555, 0 2px 16px 0 #fff2',
-                border: '2.5px solid #7c6ee6',
-                position: 'relative',
-                overflow: 'hidden',
-                animation: 'slideUp 1s cubic-bezier(.77,0,.18,1)',
-                backdropFilter: 'blur(18px)',
-              }}>
-                <div style={{ height: 2, width: '100%', background: 'linear-gradient(90deg, #e6c463 0%, transparent 100%)', marginBottom: 18, borderRadius: 2 }} />
-                <Register onRegisterSuccess={() => setShowRegister(false)} />
-                <div style={{ height: 2, width: '100%', background: 'linear-gradient(90deg, transparent 0%, #e6c463 100%)', marginTop: 18, borderRadius: 2 }} />
-                <div style={{ textAlign: 'center', marginTop: 18 }}>
-                  <button onClick={() => setShowRegister(false)} style={{ background: 'none', border: 'none', color: '#e6c463', fontWeight: 700, fontSize: 16, cursor: 'pointer', textDecoration: 'underline', letterSpacing: 1, textShadow: '0 2px 8px #2a0845' }}>Already have an account? <span style={{ color: '#fff', textShadow: '0 2px 8px #e6c463' }}>Sign In</span></button>
-                </div>
-              </div>
-            </div>
+            <Register 
+              onClose={() => setShowRegister(false)}
+              onRegister={async (username, email, password) => {
+                try {
+                  const response = await fetch('http://localhost:8080/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                  });
+                  if (response.ok) {
+                    setShowRegister(false);
+                    showMessage('success', 'Registration successful! You can now log in.');
+                  } else {
+                    const error = await response.text();
+                    throw new Error(error);
+                  }
+                } catch (error) {
+                  throw new Error('Registration failed: ' + error.message);
+                }
+              }}
+            />
           ) : (
-            <div style={{ maxWidth: 420, width: '100%', margin: '40px auto', padding: 40, borderRadius: 32, background: 'linear-gradient(135deg, #f6e27a 0%, #6441a5 100%)', boxShadow: '0 8px 40px 0 #2a084555, 0 2px 16px 0 #fff2', border: '2.5px solid #7c6ee6', position: 'relative', overflow: 'hidden', animation: 'slideUp 1s cubic-bezier(.77,0,.18,1)', backdropFilter: 'blur(18px)' }}>
-              {/* Trophy accent */}
-              <div style={{ position: 'absolute', top: -56, left: '50%', transform: 'translateX(-50%)', zIndex: 3, pointerEvents: 'none' }}>
-                <span style={{ fontSize: 40, color: '#e6c463', filter: 'drop-shadow(0 0 8px #e6c46388)' }}>🏆</span>
-              </div>
-              <div style={{ textAlign: 'center', marginBottom: 28, position: 'relative', zIndex: 3 }}>
-                <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #6441a5 0%, #f6e27a 100%)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', boxShadow: '0 4px 18px #e6c46355', animation: 'pulse 2s ease-in-out infinite', border: '2px solid #7c6ee6' }}>
-                  <span style={{ fontSize: 40, color: '#e6c463', textShadow: '0 2px 8px #2a0845' }}>⚽</span>
-                </div>
-                <h2 style={{ fontWeight: 900, color: '#fff', margin: 0, fontSize: 32, letterSpacing: 2, textShadow: '0 2px 8px #e6c463' }}>Sign In</h2>
-                <div style={{ color: '#e6c463', fontSize: 16, marginTop: 8, marginBottom: 0, fontWeight: 600, textShadow: '0 2px 8px #2a0845' }}>Log in to your Champions League account</div>
-                <div style={{ height: 2, width: '100%', background: 'linear-gradient(90deg, #e6c463 0%, transparent 100%)', margin: '18px 0 0 0', borderRadius: 2 }} />
-              </div>
-              <form onSubmit={handleLogin} style={{ marginTop: 24, position: 'relative', zIndex: 3 }}>
-                {loginError && (
-                  <div style={{ marginBottom: 16, color: '#e6c463', background: 'rgba(230,196,99,0.10)', border: '1.2px solid #e6c463', borderRadius: 9, padding: '10px 16px', textAlign: 'center', fontWeight: 700, fontSize: 15, animation: 'shake 0.5s', textShadow: '0 2px 8px #2a0845' }}>{loginError}</div>
-                )}
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: 'block', fontWeight: 700, color: '#2a0845', marginBottom: 8, fontSize: 15, letterSpacing: 1, textShadow: '0 2px 8px #e6c463' }}>Username</label>
-                  <input value={username} onChange={e => setUsername(e.target.value)} required style={{ width: '100%', padding: '13px 18px', borderRadius: 12, border: '1.5px solid #e6c463', fontSize: 16, background: 'rgba(255,255,255,0.13)', color: '#fff', outline: 'none', fontWeight: 600, boxShadow: '0 1px 4px #e6c46322', transition: 'all 0.2s', letterSpacing: 1 }} onFocus={e => e.target.style.border = '1.5px solid #fff'} onBlur={e => e.target.style.border = '1.5px solid #e6c463'} autoComplete="username" />
-                </div>
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: 'block', fontWeight: 700, color: '#2a0845', marginBottom: 8, fontSize: 15, letterSpacing: 1, textShadow: '0 2px 8px #e6c463' }}>Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: '13px 18px', borderRadius: 12, border: '1.5px solid #e6c463', fontSize: 16, background: 'rgba(255,255,255,0.13)', color: '#fff', outline: 'none', fontWeight: 600, boxShadow: '0 1px 4px #e6c46322', transition: 'all 0.2s', letterSpacing: 1 }} onFocus={e => e.target.style.border = '1.5px solid #fff'} onBlur={e => e.target.style.border = '1.5px solid #e6c463'} autoComplete="current-password" />
-                </div>
-                <button type="submit" style={{ width: '100%', padding: '14px 0', background: 'linear-gradient(90deg, #6441a5 0%, #2a0845 100%)', color: '#fff', border: '2px solid #e6c463', borderRadius: 12, fontSize: 18, fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 18px #e6c46355', marginTop: 8, transition: 'all 0.2s', letterSpacing: 2, textShadow: '0 2px 8px #e6c463' }} onMouseOver={e => { e.target.style.background = 'linear-gradient(90deg, #2a0845 0%, #6441a5 100%)'; e.target.style.color = '#e6c463'; e.target.style.transform = 'translateY(-2px) scale(1.03)'; e.target.style.boxShadow = '0 8px 32px #e6c46344'; }} onMouseOut={e => { e.target.style.background = 'linear-gradient(90deg, #6441a5 0%, #2a0845 100%)'; e.target.style.color = '#fff'; e.target.style.transform = 'translateY(0) scale(1)'; e.target.style.boxShadow = '0 4px 18px #e6c46355'; }}>Sign In</button>
-              </form>
-              <div style={{ textAlign: 'center', marginTop: 18 }}>
-                <button onClick={() => setShowRegister(true)} style={{ background: 'none', border: 'none', color: '#e6c463', fontWeight: 700, fontSize: 16, cursor: 'pointer', textDecoration: 'underline', letterSpacing: 1, textShadow: '0 2px 8px #2a0845' }}>Don&apos;t have an account? <span style={{ color: '#fff', textShadow: '0 2px 8px #e6c463' }}>Register</span></button>
-              </div>
-            </div>
+            <Login 
+              onClose={() => setShowRegister(true)}
+              onLogin={async (loginUsername, loginPassword) => {
+                try {
+                  const response = await fetch('http://localhost:8080/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: loginUsername, password: loginPassword })
+                  });
+                  const text = await response.text();
+                  if (response.ok) {
+                    // Set the username and password state variables for fetchPlayers
+                    setUsername(loginUsername);
+                    setPassword(loginPassword);
+                    setIsLoggedIn(true);
+                    setActiveTab('player-list');
+                    // Fetch userId after successful login
+                    const userInfoRes = await fetch(`http://localhost:8080/api/users/by-username/${loginUsername}`);
+                    if (userInfoRes.ok) {
+                      const userInfo = await userInfoRes.json();
+                      setUserId(userInfo.id);
+                    }
+                  } else {
+                    throw new Error(text);
+                  }
+                } catch (error) {
+                  throw new Error(error.message || 'Network error. Please check your connection.');
+                }
+              }}
+            />
           )}
         </div>
       )}

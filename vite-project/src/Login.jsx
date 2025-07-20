@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import './Register.css';
+import './Login.css';
 
-const Register = ({ onClose, onRegister }) => {
+const Login = ({ onClose, onLogin }) => {
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -32,26 +30,10 @@ const Register = ({ onClose, onRegister }) => {
 
     if (!formData.username.trim()) {
       newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -66,27 +48,25 @@ const Register = ({ onClose, onRegister }) => {
     setIsSubmitting(true);
     
     try {
-      if (onRegister) {
-        await onRegister(formData.username, formData.email, formData.password);
+      if (onLogin) {
+        await onLogin(formData.username, formData.password);
         // Clear form on success
         setFormData({
           username: '',
-          email: '',
-          password: '',
-          confirmPassword: ''
+          password: ''
         });
-        setErrorMessage('');
+        setErrors({});
       }
     } catch (error) {
-      setErrorMessage(error.message || 'Registration failed. Please try again.');
+      setErrors({ general: error.message || 'Login failed. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="register-overlay">
-      <div className="register-background">
+    <div className="login-overlay">
+      <div className="login-background">
         <div className="floating-shapes">
           <div className="shape shape-1"></div>
           <div className="shape shape-2"></div>
@@ -95,16 +75,16 @@ const Register = ({ onClose, onRegister }) => {
         </div>
       </div>
       
-      <div className="register-container">
-        <div className="register-header">
-          <h1 className="register-title">
-            <span className="title-glow">Join the</span>
-            <span className="title-accent"> Champions</span>
+      <div className="login-container">
+        <div className="login-header">
+          <h1 className="login-title">
+            <span className="title-glow">Welcome</span>
+            <span className="title-accent"> Back</span>
           </h1>
-          <p className="register-subtitle">Create your account and start your journey</p>
+          <p className="login-subtitle">Sign in to your Champions League account</p>
         </div>
 
-        <form className="register-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <div className="input-wrapper">
               <input
@@ -112,7 +92,7 @@ const Register = ({ onClose, onRegister }) => {
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
-                className={`register-input ${errors.username ? 'error' : ''}`}
+                className={`login-input ${errors.username ? 'error' : ''}`}
                 placeholder="Username"
                 required
               />
@@ -125,28 +105,11 @@ const Register = ({ onClose, onRegister }) => {
           <div className="input-group">
             <div className="input-wrapper">
               <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`register-input ${errors.email ? 'error' : ''}`}
-                placeholder="Email"
-                required
-              />
-              <div className="input-border"></div>
-              <div className="input-icon">📧</div>
-            </div>
-            {errors.email && <span className="error-text">{errors.email}</span>}
-          </div>
-
-          <div className="input-group">
-            <div className="input-wrapper">
-              <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`register-input ${errors.password ? 'error' : ''}`}
+                className={`login-input ${errors.password ? 'error' : ''}`}
                 placeholder="Password"
                 required
               />
@@ -156,22 +119,11 @@ const Register = ({ onClose, onRegister }) => {
             {errors.password && <span className="error-text">{errors.password}</span>}
           </div>
 
-          <div className="input-group">
-            <div className="input-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={`register-input ${errors.confirmPassword ? 'error' : ''}`}
-                placeholder="Confirm Password"
-                required
-              />
-              <div className="input-border"></div>
-              <div className="input-icon">🔐</div>
+          {errors.general && (
+            <div className="error-message">
+              {errors.general}
             </div>
-            {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
-          </div>
+          )}
 
           <div className="password-toggle">
             <label className="toggle-label">
@@ -188,28 +140,28 @@ const Register = ({ onClose, onRegister }) => {
 
           <button 
             type="submit" 
-            className={`register-button ${isSubmitting ? 'loading' : ''}`}
+            className={`login-button ${isSubmitting ? 'loading' : ''}`}
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <div className="button-content">
                 <div className="spinner"></div>
-                <span>Creating Account...</span>
+                <span>Signing In...</span>
               </div>
             ) : (
               <div className="button-content">
-                <span>Create Account</span>
+                <span>Sign In</span>
                 <div className="button-glow"></div>
               </div>
             )}
           </button>
         </form>
 
-        <div className="register-footer">
-          <p className="login-link">
-            Already have an account? 
+        <div className="login-footer">
+          <p className="register-link">
+            Don't have an account? 
             <button className="link-button" onClick={() => onClose && onClose()}>
-              Sign In
+              Register
             </button>
           </p>
         </div>
@@ -222,4 +174,4 @@ const Register = ({ onClose, onRegister }) => {
   );
 };
 
-export default Register; 
+export default Login; 
