@@ -207,17 +207,18 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
 
   if (gameLoading) {
     return (
-      <div style={{ textAlign: 'center', padding: 40 }}>
-        <div style={{ fontSize: 24, marginBottom: 16 }}>Loading random player...</div>
+      <div className="player-guesser-glass" style={{ textAlign: 'center', padding: 60 }}>
+        <div className="guesser-spinner" />
+        <div style={{ fontSize: 24, marginTop: 24, color: '#00eaff', fontWeight: 700, letterSpacing: 1 }}>Loading random player...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', padding: 40 }}>
-        <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>
-        <button onClick={fetchRandomPlayer} style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
+      <div className="player-guesser-glass" style={{ textAlign: 'center', padding: 60 }}>
+        <div style={{ color: '#ff4d6d', marginBottom: 24, fontWeight: 700, fontSize: 20 }}>{error}</div>
+        <button className="guesser-btn guesser-btn-blue" onClick={fetchRandomPlayer}>
           Try Again
         </button>
       </div>
@@ -226,9 +227,9 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
 
   if (!currentGameData || !currentQuestion) {
     return (
-      <div style={{ textAlign: 'center', padding: 40 }}>
-        <div>No game data available.</div>
-        <button onClick={fetchRandomPlayer} style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 16 }}>
+      <div className="player-guesser-glass" style={{ textAlign: 'center', padding: 60 }}>
+        <div style={{ color: '#fff', fontSize: 20, marginBottom: 24 }}>No game data available.</div>
+        <button className="guesser-btn guesser-btn-blue" onClick={fetchRandomPlayer}>
           Start Game
         </button>
       </div>
@@ -236,24 +237,24 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
   }
 
   return (
-    <div className="player-guesser-container" style={{ maxWidth: 500, margin: '40px auto', padding: 24, border: '1px solid #eee', borderRadius: 12, background: '#fff', boxShadow: '0 2px 12px #0001' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: 24 }}>Player Stats Guesser!</h2>
-      
+    <div className="player-guesser-glass player-guesser-container">
+      <h2 className="guesser-title">
+        <span className="guesser-title-glow">Player</span>
+        <span className="guesser-title-accent"> Guesser</span>
+      </h2>
       {/* Score Display */}
-      <div style={{ textAlign: 'center', marginBottom: 24, fontSize: 16 }}>
-        <span style={{ marginRight: 20 }}>Score: <b>{score}</b></span>
-        <span>Total Guesses: <b>{totalGuesses}</b></span>
+      <div className="guesser-score-row">
+        <span className="guesser-score-label">Score: <b className="guesser-score-glow">{score}</b></span>
+        <span className="guesser-score-label">Total Guesses: <b>{totalGuesses}</b></span>
       </div>
 
       {/* Player Info (excluding info being questioned) */}
-      <div style={{ marginBottom: 24, fontSize: 18, lineHeight: 1.7, background: '#f8f9fa', padding: 20, borderRadius: 8 }}>
-        <h3 style={{ marginBottom: 16, textAlign: 'center' }}>Player Info:</h3>
-        {/* Only show info that is not being questioned */}
+      <div className="guesser-player-info">
+        <h3 className="guesser-section-title">Player Info</h3>
         {currentQuestion.type !== 'name' && currentGameData.actualName && <div><b>Name:</b> {currentGameData.actualName}</div>}
         {currentGameData.pos && <div><b>Position:</b> {currentGameData.pos}</div>}
         {currentQuestion.type !== 'team' && currentGameData.teamName && <div><b>Team:</b> {currentGameData.teamName}</div>}
         {currentGameData.nation && <div><b>Nationality:</b> {currentGameData.nation}</div>}
-        {/* Show stats as additional info */}
         {currentGameData.age && <div><b>Age:</b> {currentGameData.age}</div>}
         {currentGameData.gls !== undefined && <div><b>Goals:</b> {currentGameData.gls}</div>}
         {currentGameData.ast !== undefined && <div><b>Assists:</b> {currentGameData.ast}</div>}
@@ -264,41 +265,23 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
       </div>
 
       {/* Question */}
-      <div style={{ marginBottom: 24, fontSize: 20, textAlign: 'center', fontWeight: 'bold', color: '#333' }}>
+      <div className="guesser-question">
         {currentQuestion.text}
       </div>
 
       {/* True/False Buttons */}
-      <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 24 }}>
+      <div className="guesser-btn-row">
         <button 
+          className="guesser-btn guesser-btn-green"
           onClick={() => submitGuess(true)}
           disabled={loading || result !== null}
-          style={{ 
-            padding: '12px 32px', 
-            fontSize: 18, 
-            borderRadius: 6, 
-            background: '#28a745', 
-            color: '#fff', 
-            border: 'none', 
-            cursor: (loading || result !== null) ? 'not-allowed' : 'pointer',
-            opacity: (loading || result !== null) ? 0.6 : 1
-          }}
         >
           TRUE
         </button>
         <button 
+          className="guesser-btn guesser-btn-red"
           onClick={() => submitGuess(false)}
           disabled={loading || result !== null}
-          style={{ 
-            padding: '12px 32px', 
-            fontSize: 18, 
-            borderRadius: 6, 
-            background: '#dc3545', 
-            color: '#fff', 
-            border: 'none', 
-            cursor: (loading || result !== null) ? 'not-allowed' : 'pointer',
-            opacity: (loading || result !== null) ? 0.6 : 1
-          }}
         >
           FALSE
         </button>
@@ -306,11 +289,11 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
 
       {/* Result Display */}
       {result !== null && (
-        <div style={{ marginTop: 24, textAlign: 'center', fontSize: 18 }}>
+        <div className={`guesser-result ${result ? 'guesser-correct' : 'guesser-incorrect'}`}>
           {result ? (
-            <span style={{ color: 'green', fontWeight: 700 }}>🎉 Correct! Well done!</span>
+            <span>🎉 Correct! Well done!</span>
           ) : (
-            <span style={{ color: 'red', fontWeight: 700 }}>❌ Incorrect. The answer was {currentQuestion.answer ? 'TRUE' : 'FALSE'}.</span>
+            <span>❌ Incorrect. The answer was {currentQuestion.answer ? 'TRUE' : 'FALSE'}.</span>
           )}
         </div>
       )}
@@ -318,16 +301,8 @@ const PlayerGuesser = ({ players = [], username = 'admin', password = 'secret', 
       {/* Play Again Button */}
       <div style={{ textAlign: 'center', marginTop: 32 }}>
         <button 
-          onClick={startNewGame} 
-          style={{ 
-            padding: '12px 24px', 
-            fontSize: 16, 
-            borderRadius: 6, 
-            background: '#007bff', 
-            color: '#fff', 
-            border: 'none', 
-            cursor: 'pointer' 
-          }}
+          className="guesser-btn guesser-btn-blue"
+          onClick={startNewGame}
         >
           Next Question
         </button>

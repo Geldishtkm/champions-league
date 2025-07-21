@@ -292,16 +292,18 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
   };
 
   return (
-    <div className="my-team-pitch" style={{ padding: 24, background: 'linear-gradient(180deg, #0a183d 60%, #1e2746 100%)', borderRadius: 24, boxShadow: '0 4px 32px #0003', maxWidth: 700, margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ color: '#fff' }}>My Team ({selectedFormation} Formation)</h2>
-        <div>
-          <label htmlFor="formation-select" style={{ color: '#fff', marginRight: 8 }}>Formation:</label>
+    <div className="my-team-glass my-team-pitch">
+      <div className="my-team-header">
+        <h2 className="my-team-title">
+          <span className="my-team-title-glow">My Team</span>
+          <span className="my-team-title-accent"> ({selectedFormation} Formation)</span>
+        </h2>
+        <div className="my-team-formation-select">
+          <label htmlFor="formation-select">Formation:</label>
           <select
             id="formation-select"
             value={selectedFormation}
             onChange={e => setSelectedFormation(e.target.value)}
-            style={{ padding: 6, borderRadius: 8 }}
             aria-label="Select formation"
           >
             {Object.keys(formations).map(f => (
@@ -310,7 +312,7 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
           </select>
         </div>
       </div>
-      <div style={{ margin: '0 auto', maxWidth: 600, minHeight: 400 }}>
+      <div className="my-team-rows">
         {rows.map((row, i) => (
           row.length > 0 && (
             <PitchRow key={i}>
@@ -318,36 +320,24 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
                 const slot = myTeam[idx];
                 const eligible = eligibleBenchPlayers(idx);
                 return (
-                  <div key={idx} style={{
-                    background: slot.player ? '#fff' : '#e0e7ef',
-                    border: '2px solid #007bff',
-                    borderRadius: 16,
-                    minWidth: 90,
-                    minHeight: 90,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: slot.player ? '0 2px 12px #007bff33' : 'none',
-                    position: 'relative',
-                  }}>
-                    <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{formationArr[idx].label}</div>
-                    <div style={{ fontSize: 22 }}>{positionIcons[formationArr[idx].position]}</div>
+                  <div key={idx} className={`my-team-slot${slot.player ? ' filled' : ''}`}> 
+                    <div className="my-team-slot-label">{formationArr[idx].label}</div>
+                    <div className="my-team-slot-icon">{positionIcons[formationArr[idx].position]}</div>
                     {slot.player ? (
                       <>
                         <div 
-                          style={{ fontWeight: 600, marginTop: 6, cursor: 'help' }}
+                          className="my-team-player-name"
                           onMouseEnter={(e) => handleMouseEnter(slot.player, e)}
                           onMouseLeave={handleMouseLeave}
                           title={`${slot.player.name} - ${slot.player.team} - ${slot.player.nationality}`}
                         >
                           {slot.player.name}
                         </div>
-                        <div style={{ fontSize: 13, color: '#555' }}>{slot.player.team}</div>
-                        <div style={{ fontSize: 16, marginTop: 2 }}>{getFlagEmoji(slot.player.nationality)}</div>
+                        <div className="my-team-player-team">{slot.player.team}</div>
+                        <div className="my-team-player-flag">{getFlagEmoji(slot.player.nationality)}</div>
                         <button 
-                          onClick={() => onRemoveFromSlot(idx)} 
-                          style={{ marginTop: 8, fontSize: 12, background: '#ff4d4f', color: '#fff', border: 'none', borderRadius: 8, padding: '2px 10px', cursor: 'pointer' }}
+                          className="my-team-remove-btn"
+                          onClick={() => onRemoveFromSlot(idx)}
                           aria-label={`Remove ${slot.player.name} from ${formationArr[idx].label}`}
                         >
                           Remove
@@ -356,18 +346,13 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
                     ) : (
                       <div style={{ textAlign: 'center' }}>
                         <button
+                          className="my-team-add-btn"
                           onClick={() => setPicker({ open: true, slotIdx: idx })}
-                          style={{ marginTop: 10, fontSize: 13, background: '#007bff', color: '#fff', border: 'none', borderRadius: 8, padding: '4px 14px', cursor: eligible.length > 0 ? 'pointer' : 'not-allowed', opacity: eligible.length > 0 ? 1 : 0.5 }}
                           disabled={eligible.length === 0}
                           aria-label={`Add player to ${formationArr[idx].label} position`}
                         >
                           Add
                         </button>
-                        {eligible.length === 0 && (
-                          <div style={{ fontSize: 10, color: '#ff6b6b', marginTop: 4, textAlign: 'center' }}>
-                            {bench.length === 0 ? 'No players in bench' : 'No players in bench'}
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
@@ -377,14 +362,11 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
           )
         ))}
       </div>
-      
-      {/* Player Tooltip */}
       <PlayerTooltip 
         player={tooltip.player} 
         show={tooltip.show} 
         position={tooltip.position} 
       />
-      
       <PlayerPickerModal
         open={picker.open}
         onClose={() => setPicker({ open: false, slotIdx: null })}
@@ -395,59 +377,29 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
         }}
         filledPlayerIds={filledPlayerIds}
       />
-      
-      {/* Debug Info */}
-      <div style={{ marginTop: 20, background: '#f8f9fa', borderRadius: 8, padding: 12, fontSize: 12, color: '#666' }}>
-        <strong>Debug Info:</strong><br/>
-        Bench players: {bench.length} | 
-        {bench.map(p => `${p.name} (${p.position})`).join(', ')}
-        <br/>
-        <strong>Formation slots:</strong> {Array.from(new Set(myTeam.map(slot => slot.position))).join(', ')}
-        <br/>
-        <strong>Multi-position players:</strong> {bench.filter(p => p.position.includes(',')).map(p => `${p.name}: ${p.position}`).join(', ') || 'None'}
-        <br/>
-        <strong>⚠️ No position restrictions:</strong> Any player can be placed in any slot
-      </div>
-      
       {/* Bench Section */}
       {bench.length > 0 && (
-        <div style={{ marginTop: 36, background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 12px #007bff22' }}>
-          <h3 style={{ textAlign: 'center', color: '#1B1F3B', marginBottom: 16 }}>Bench ({bench.length}/23)</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'center' }}>
+        <div className="my-team-bench">
+          <h3 className="my-team-bench-title">Bench ({bench.length}/23)</h3>
+          <div className="my-team-bench-list">
             {bench.map(player => {
-              // Show only main info (name, team, position) if nationality is empty (added via Add Player form)
               const isMinimal = !player.nationality;
               return (
-                <div key={player.id} style={{
-                  background: '#e0e7ef',
-                  border: '1.5px solid #007bff',
-                  borderRadius: 12,
-                  minWidth: 120,
-                  minHeight: 60,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 8,
-                  position: 'relative',
-                }}>
+                <div key={player.id} className="my-team-bench-card">
                   <div 
-                    style={{ fontWeight: 600, cursor: 'help' }}
+                    className="my-team-bench-player-name"
                     onMouseEnter={(e) => handleMouseEnter(player, e)}
                     onMouseLeave={handleMouseLeave}
                     title={`${player.name} - ${player.team} - ${player.nationality}`}
                   >
                     {player.name}
                   </div>
-                  <div style={{ fontSize: 13, color: '#555' }}>{player.team}</div>
-                  <div style={{ fontSize: 15, color: '#007bff', marginTop: 2 }}>
-                    {isMinimal ? player.position : `${positionIcons[player.position]} ${player.position}`}
-                  </div>
-                  {/* Remove nationality and flag for minimal info */}
-                  <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                  <div className="my-team-bench-player-team">{player.team}</div>
+                  <div className="my-team-bench-player-pos">{isMinimal ? player.position : `${positionIcons[player.position]} ${player.position}`}</div>
+                  <div className="my-team-bench-actions">
                     <button 
-                      onClick={() => onRemoveFromBench(player.id)} 
-                      style={{ fontSize: 12, background: '#ff4d4f', color: '#fff', border: 'none', borderRadius: 8, padding: '2px 10px', cursor: 'pointer' }}
+                      className="my-team-remove-btn"
+                      onClick={() => onRemoveFromBench(player.id)}
                       aria-label={`Remove ${player.name} from bench`}
                     >
                       Delete
@@ -459,14 +411,12 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
           </div>
         </div>
       )}
-      
       {bench.length === 0 && (
-        <div style={{ marginTop: 36, background: '#fff', borderRadius: 16, padding: 18, textAlign: 'center', color: '#666' }}>
+        <div className="my-team-bench-empty">
           <h3>No players in bench</h3>
           <p>Add players from the Player List to your bench first!</p>
         </div>
       )}
-      
       <SlotPickerModal
         open={slotPicker.open}
         onClose={() => setSlotPicker({ open: false, player: null })}

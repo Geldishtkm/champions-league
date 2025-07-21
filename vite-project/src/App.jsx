@@ -6,10 +6,7 @@ import StartingXI from './StartingXI';
 import ChampionsLogo from './ChampionsLogo';
 import PlayerGuesser from './PlayerGuesser';
 import Register from './Register';
-<<<<<<< HEAD
-=======
 import Login from './Login';
->>>>>>> b1c2d06
 import ChampionsSection from './ChampionsSection';
 import './App.css';
 
@@ -937,56 +934,86 @@ function App() {
         </div>
       )}
 
-      <nav className="app-navigation" style={{
-        background: 'rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
+      {/* Modern Navigation Bar */}
+      <nav className="app-navigation neon-nav" style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '1.5rem',
+        padding: '1.2rem 2.5rem',
+        margin: '32px auto 36px auto',
+        borderRadius: '32px',
+        background: 'rgba(30, 34, 60, 0.55)',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 1.5px 8px 0 rgba(0,212,255,0.10)',
+        backdropFilter: 'blur(18px)',
+        border: '1.5px solid rgba(0,212,255,0.18)',
         position: 'relative',
-        zIndex: 2,
+        zIndex: 10,
+        minWidth: 320,
+        maxWidth: 700,
       }}>
         {tabs.map(tab => (
           <button
             key={tab.id}
-            className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+            className={`nav-tab neon-tab${activeTab === tab.id ? ' active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
-            aria-label={`Switch to ${tab.label} tab`}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.75rem 1.5rem',
+              gap: '0.7rem',
+              padding: '0.95rem 2.2rem',
               border: 'none',
-              borderRadius: '25px',
-              background: activeTab === tab.id 
-                ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                : 'rgba(255,255,255,0.1)',
-              color: activeTab === tab.id ? '#fff' : 'rgba(255,255,255,0.8)',
-              fontWeight: '600',
+              borderRadius: '22px',
+              background: activeTab === tab.id
+                ? 'linear-gradient(120deg, rgba(0,212,255,0.18) 0%, rgba(255,0,255,0.13) 100%)'
+                : 'rgba(255,255,255,0.07)',
+              color: activeTab === tab.id ? '#00eaff' : '#e0e0e0',
+              fontWeight: 700,
+              fontSize: '1.08rem',
+              letterSpacing: '0.03em',
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: activeTab === tab.id 
-                ? '0 8px 32px rgba(102, 126, 234, 0.4)'
-                : '0 4px 12px rgba(0,0,0,0.1)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: activeTab === tab.id
+                ? '0 0 16px 2px #00eaff, 0 2px 12px 0 rgba(0,212,255,0.10)'
+                : '0 2px 8px rgba(0,0,0,0.10)',
+              position: 'relative',
+              transition: 'all 0.25s cubic-bezier(.4,2,.6,1)',
+              outline: 'none',
+              borderBottom: activeTab === tab.id ? '3px solid #00eaff' : '3px solid transparent',
+              textShadow: activeTab === tab.id ? '0 0 8px #00eaff, 0 0 2px #fff' : '0 1px 2px #222',
             }}
             onMouseOver={e => {
               if (activeTab !== tab.id) {
-                e.target.style.background = 'rgba(255,255,255,0.2)';
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+                e.target.style.background = 'rgba(0,212,255,0.10)';
+                e.target.style.color = '#00eaff';
+                e.target.style.boxShadow = '0 0 12px 2px #00eaff44';
               }
             }}
             onMouseOut={e => {
               if (activeTab !== tab.id) {
-                e.target.style.background = 'rgba(255,255,255,0.1)';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                e.target.style.background = 'rgba(255,255,255,0.07)';
+                e.target.style.color = '#e0e0e0';
+                e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.10)';
               }
             }}
           >
-            <span className="tab-icon" style={{ fontSize: '1.2rem' }}>{tab.icon}</span>
-            <span className="tab-label" style={{ fontSize: '0.9rem' }}>{tab.label}</span>
+            <span className="tab-icon" style={{ fontSize: '1.35rem', filter: activeTab === tab.id ? 'drop-shadow(0 0 6px #00eaff)' : 'none' }}>{tab.icon}</span>
+            <span className="tab-label" style={{ fontSize: '1.01rem', fontWeight: 600 }}>{tab.label}</span>
+            {activeTab === tab.id && (
+              <span style={{
+                position: 'absolute',
+                left: 18,
+                right: 18,
+                bottom: 7,
+                height: 4,
+                borderRadius: 2,
+                background: 'linear-gradient(90deg, #00eaff 0%, #ff00ff 100%)',
+                boxShadow: '0 0 12px 2px #00eaff99',
+                opacity: 0.85,
+                pointerEvents: 'none',
+                zIndex: 2,
+                animation: 'fadeIn 0.5s',
+              }} />
+            )}
           </button>
         ))}
       </nav>

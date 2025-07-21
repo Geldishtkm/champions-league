@@ -116,10 +116,10 @@ const Register = ({ onClose, onRegister }) => {
       <div className="register-container">
         <div className="register-header">
           <h1 className="register-title">
-            <span className="title-glow">Join the</span>
-            <span className="title-accent"> Champions</span>
+            <span className="title-glow">Welcome,</span>
+            <span className="title-accent"> Champion!</span>
           </h1>
-          <p className="register-subtitle">Create your account and start your journey</p>
+          <p className="register-subtitle">Create your Champions League account</p>
         </div>
 
         <form className="register-form" onSubmit={handleSubmit}>
@@ -212,11 +212,11 @@ const Register = ({ onClose, onRegister }) => {
             {isSubmitting ? (
               <div className="button-content">
                 <div className="spinner"></div>
-                <span>Creating Account...</span>
+                <span>Signing Up...</span>
               </div>
             ) : (
               <div className="button-content">
-                <span>Create Account</span>
+                <span>Sign Up</span>
                 <div className="button-glow"></div>
               </div>
             )}
