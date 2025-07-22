@@ -713,7 +713,7 @@ function App() {
           {showRegister ? (
             <Register 
               onClose={() => setShowRegister(false)}
-              onRegister={async (username, email, password) => {
+              onRegister={async (username, password, setSuccess) => {
                 try {
                   const response = await fetch('http://localhost:8080/api/users/register', {
                     method: 'POST',
@@ -721,8 +721,8 @@ function App() {
                     body: JSON.stringify({ username, password })
                   });
                   if (response.ok) {
-                    setShowRegister(false);
-                    showMessage('success', 'Registration successful! You can now log in.');
+                    setSuccess(true);
+                    setTimeout(() => setShowRegister(false), 2000);
                   } else {
                     const error = await response.text();
                     throw new Error(error);
@@ -769,254 +769,133 @@ function App() {
       {/* END CONDITIONAL AUTH UI */}
 
       <header className="app-header" style={{
-        background: 'rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        background: '#23294d', // single color tone, deep blue
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         position: 'relative',
         zIndex: 2,
+        boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.10)',
+        paddingBottom: 0,
       }}>
         <div style={{
           textAlign: 'center',
-          padding: '20px 0',
+          padding: '32px 0 0 0',
         }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '15px',
-            marginBottom: '10px',
-          }}>
-            <div style={{
-              fontSize: '50px',
-              animation: 'bounce 3s ease-in-out infinite',
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
-            }}>
-              ⚽
-            </div>
-            <h1 style={{
-              color: '#fff',
-              fontWeight: 900,
-              letterSpacing: 2,
-              fontSize: 36,
-              margin: 0,
-              textShadow: '0 4px 20px rgba(0,0,0,0.5)',
-              background: 'linear-gradient(45deg, #ffd700, #ffed4e, #ffd700)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              animation: 'gradientShift 4s ease-in-out infinite',
-            }}>
-              Champions League Fantasy League
-            </h1>
-            <div style={{
-              fontSize: '50px',
-              animation: 'bounce 3s ease-in-out infinite 1s',
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
-            }}>
-              🏆
-            </div>
-          </div>
-          <div style={{
-            color: 'rgba(255,255,255,0.8)',
-            fontSize: 16,
-            fontWeight: 300,
+          <h1 style={{
+            color: '#fff',
+            fontWeight: 700,
             letterSpacing: 1,
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            fontSize: 38,
+            margin: 0,
+            textShadow: '0 2px 8px rgba(0,0,0,0.10)',
+            background: 'none',
+            WebkitBackgroundClip: 'unset',
+            WebkitTextFillColor: 'unset',
+            backgroundClip: 'unset',
+            filter: 'none',
+            borderRadius: 0,
+            padding: 0,
+            position: 'relative',
+            zIndex: 2,
+            fontFamily: 'Segoe UI, Arial, sans-serif',
           }}>
-            Welcome back! Ready to build your dream team?
-          </div>
+            Champions League Fantasy League
+          </h1>
         </div>
       </header>
 
-      <ChampionsLogo />
+      {/* Move ChampionsSection up here, before the main tab content */}
       <ChampionsSection />
 
-      {/* Global message display */}
-      {message.text && (
-        <div className={`global-message ${message.type}`} style={{
-          padding: '16px 20px',
-          borderRadius: '12px',
-          margin: '20px auto',
-          maxWidth: '600px',
-          fontWeight: '600',
-          textAlign: 'center',
-          backgroundColor: message.type === 'success' ? 'rgba(40,167,69,0.1)' : message.type === 'error' ? 'rgba(229,62,62,0.1)' : 'rgba(0,123,255,0.1)',
-          color: message.type === 'success' ? '#68d391' : message.type === 'error' ? '#fc8181' : '#63b3ed',
-          border: `1px solid ${message.type === 'success' ? 'rgba(40,167,69,0.2)' : message.type === 'error' ? 'rgba(229,62,62,0.2)' : 'rgba(0,123,255,0.2)'}`,
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          animation: 'slideDown 0.5s ease-out',
+      {isLoggedIn && (
+        <nav className="app-navigation neon-nav" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '1.5rem',
+          padding: '1.2rem 3.5rem',
+          margin: '32px auto 36px auto',
+          borderRadius: '32px',
+          background: 'rgba(30, 34, 60, 0.55)',
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 1.5px 8px 0 rgba(0,212,255,0.10)',
+          backdropFilter: 'blur(18px)',
+          border: '1.5px solid rgba(0,212,255,0.18)',
           position: 'relative',
-          zIndex: 3,
+          zIndex: 10,
+          minWidth: 600,
+          maxWidth: 1000,
+          width: '100%',
         }}>
-          {message.text}
-        </div>
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`nav-tab neon-tab${activeTab === tab.id ? ' active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.7rem',
+                padding: '0.95rem 2.2rem',
+                border: 'none',
+                borderRadius: '22px',
+                background: activeTab === tab.id
+                  ? 'linear-gradient(120deg, rgba(0,212,255,0.18) 0%, rgba(255,0,255,0.13) 100%)'
+                  : 'rgba(255,255,255,0.07)',
+                color: activeTab === tab.id ? '#00eaff' : '#e0e0e0',
+                fontWeight: 700,
+                fontSize: '1.08rem',
+                letterSpacing: '0.03em',
+                cursor: 'pointer',
+                boxShadow: activeTab === tab.id
+                  ? '0 0 16px 2px #00eaff, 0 2px 12px 0 rgba(0,212,255,0.10)'
+                  : '0 2px 8px rgba(0,0,0,0.10)',
+                position: 'relative',
+                transition: 'all 0.25s cubic-bezier(.4,2,.6,1)',
+                outline: 'none',
+                borderBottom: activeTab === tab.id ? '3px solid #00eaff' : '3px solid transparent',
+                textShadow: activeTab === tab.id ? '0 0 8px #00eaff, 0 0 2px #fff' : '0 1px 2px #222',
+                minWidth: 0,
+                whiteSpace: 'nowrap',
+              }}
+              onMouseOver={e => {
+                if (activeTab !== tab.id) {
+                  e.target.style.background = 'rgba(0,212,255,0.10)';
+                  e.target.style.color = '#00eaff';
+                  e.target.style.boxShadow = '0 0 12px 2px #00eaff44';
+                }
+              }}
+              onMouseOut={e => {
+                if (activeTab !== tab.id) {
+                  e.target.style.background = 'rgba(255,255,255,0.07)';
+                  e.target.style.color = '#e0e0e0';
+                  e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.10)';
+                }
+              }}
+            >
+              {/* Removed tab.icon span for a cleaner look */}
+              <span className="tab-label" style={{ fontSize: '1.01rem', fontWeight: 600 }}>{tab.label}</span>
+              {activeTab === tab.id && (
+                <span style={{
+                  position: 'absolute',
+                  left: 18,
+                  right: 18,
+                  bottom: 7,
+                  height: 4,
+                  borderRadius: 2,
+                  background: 'linear-gradient(90deg, #00eaff 0%, #ff00ff 100%)',
+                  boxShadow: '0 0 12px 2px #00eaff99',
+                  opacity: 0.85,
+                  pointerEvents: 'none',
+                  zIndex: 2,
+                  animation: 'fadeIn 0.5s',
+                }} />
+              )}
+            </button>
+          ))}
+        </nav>
       )}
-
-      {/* Error display */}
-      {error && (
-        <div style={{
-          padding: '16px 20px',
-          borderRadius: '12px',
-          margin: '20px auto',
-          maxWidth: '600px',
-          fontWeight: '600',
-          textAlign: 'center',
-          backgroundColor: 'rgba(229,62,62,0.1)',
-          color: '#fc8181',
-          border: '1px solid rgba(229,62,62,0.2)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          animation: 'shake 0.5s ease-in-out',
-          position: 'relative',
-          zIndex: 3,
-        }}>
-          {error}
-          <button 
-            onClick={() => setError(null)}
-            style={{
-              marginLeft: '12px',
-              background: 'none',
-              border: 'none',
-              color: '#fc8181',
-              cursor: 'pointer',
-              fontSize: '18px',
-              borderRadius: '50%',
-              width: '24px',
-              height: '24px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.3s ease',
-            }}
-            onMouseOver={e => e.target.style.background = 'rgba(229,62,62,0.2)'}  
-            onMouseOut={e => e.target.style.background = 'none'}
-            aria-label="Dismiss error message"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
-      {/* Loading indicator */}
-      {loading && (
-        <div style={{
-          padding: '16px 20px',
-          borderRadius: '12px',
-          margin: '20px auto',
-          maxWidth: '600px',
-          fontWeight: '600',
-          textAlign: 'center',
-          backgroundColor: 'rgba(0,123,255,0.1)',
-          color: '#63b3ed',
-          border: '1px solid rgba(0,123,255,0.2)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-          position: 'relative',
-          zIndex: 3,
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-          }}>
-            <div style={{
-              width: '20px',
-              height: '20px',
-              border: '2px solid #63b3ed',
-              borderTop: '2px solid transparent',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-            }} />
-            Loading...
-          </div>
-        </div>
-      )}
-
-      {/* Modern Navigation Bar */}
-      <nav className="app-navigation neon-nav" style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '1.5rem',
-        padding: '1.2rem 2.5rem',
-        margin: '32px auto 36px auto',
-        borderRadius: '32px',
-        background: 'rgba(30, 34, 60, 0.55)',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 1.5px 8px 0 rgba(0,212,255,0.10)',
-        backdropFilter: 'blur(18px)',
-        border: '1.5px solid rgba(0,212,255,0.18)',
-        position: 'relative',
-        zIndex: 10,
-        minWidth: 320,
-        maxWidth: 700,
-      }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            className={`nav-tab neon-tab${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.7rem',
-              padding: '0.95rem 2.2rem',
-              border: 'none',
-              borderRadius: '22px',
-              background: activeTab === tab.id
-                ? 'linear-gradient(120deg, rgba(0,212,255,0.18) 0%, rgba(255,0,255,0.13) 100%)'
-                : 'rgba(255,255,255,0.07)',
-              color: activeTab === tab.id ? '#00eaff' : '#e0e0e0',
-              fontWeight: 700,
-              fontSize: '1.08rem',
-              letterSpacing: '0.03em',
-              cursor: 'pointer',
-              boxShadow: activeTab === tab.id
-                ? '0 0 16px 2px #00eaff, 0 2px 12px 0 rgba(0,212,255,0.10)'
-                : '0 2px 8px rgba(0,0,0,0.10)',
-              position: 'relative',
-              transition: 'all 0.25s cubic-bezier(.4,2,.6,1)',
-              outline: 'none',
-              borderBottom: activeTab === tab.id ? '3px solid #00eaff' : '3px solid transparent',
-              textShadow: activeTab === tab.id ? '0 0 8px #00eaff, 0 0 2px #fff' : '0 1px 2px #222',
-            }}
-            onMouseOver={e => {
-              if (activeTab !== tab.id) {
-                e.target.style.background = 'rgba(0,212,255,0.10)';
-                e.target.style.color = '#00eaff';
-                e.target.style.boxShadow = '0 0 12px 2px #00eaff44';
-              }
-            }}
-            onMouseOut={e => {
-              if (activeTab !== tab.id) {
-                e.target.style.background = 'rgba(255,255,255,0.07)';
-                e.target.style.color = '#e0e0e0';
-                e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.10)';
-              }
-            }}
-          >
-            <span className="tab-icon" style={{ fontSize: '1.35rem', filter: activeTab === tab.id ? 'drop-shadow(0 0 6px #00eaff)' : 'none' }}>{tab.icon}</span>
-            <span className="tab-label" style={{ fontSize: '1.01rem', fontWeight: 600 }}>{tab.label}</span>
-            {activeTab === tab.id && (
-              <span style={{
-                position: 'absolute',
-                left: 18,
-                right: 18,
-                bottom: 7,
-                height: 4,
-                borderRadius: 2,
-                background: 'linear-gradient(90deg, #00eaff 0%, #ff00ff 100%)',
-                boxShadow: '0 0 12px 2px #00eaff99',
-                opacity: 0.85,
-                pointerEvents: 'none',
-                zIndex: 2,
-                animation: 'fadeIn 0.5s',
-              }} />
-            )}
-          </button>
-        ))}
-      </nav>
 
       <main className="app-main" style={{
         flex: 1,

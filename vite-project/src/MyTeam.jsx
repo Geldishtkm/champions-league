@@ -294,9 +294,38 @@ const MyTeam = ({ players, myTeam, bench = [], onAddToSlot, onRemoveFromSlot, on
   return (
     <div className="my-team-glass my-team-pitch">
       <div className="my-team-header">
-        <h2 className="my-team-title">
-          <span className="my-team-title-glow">My Team</span>
-          <span className="my-team-title-accent"> ({selectedFormation} Formation)</span>
+        <h2 className="my-team-title" style={{
+          fontSize: '2.3rem',
+          fontWeight: 900,
+          background: 'linear-gradient(90deg, #fff 0%, #ffe066 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          color: '#fff',
+          textShadow: '0 2px 16px #fff, 0 1px 2px #ffe066',
+          margin: '32px 0 18px 0',
+          letterSpacing: 1,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          <span style={{
+            fontWeight: 900,
+            fontSize: '2.3rem',
+            background: 'linear-gradient(90deg, #fff 0%, #ffe066 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            color: '#fff',
+            textShadow: '0 2px 16px #fff, 0 1px 2px #ffe066',
+          }}>My Team</span>
+          <span style={{
+            fontWeight: 600,
+            fontSize: '1.2rem',
+            color: '#bfc6e6',
+            marginLeft: 8,
+            textShadow: '0 1px 4px #007bff22',
+          }}>({selectedFormation} Formation)</span>
         </h2>
         <div className="my-team-formation-select">
           <label htmlFor="formation-select">Formation:</label>

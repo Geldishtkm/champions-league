@@ -4,13 +4,13 @@ import './Register.css';
 const Register = ({ onClose, onRegister }) => {
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
     password: '',
     confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +34,6 @@ const Register = ({ onClose, onRegister }) => {
       newErrors.username = 'Username is required';
     } else if (formData.username.length < 3) {
       newErrors.username = 'Username must be at least 3 characters';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
@@ -67,11 +61,10 @@ const Register = ({ onClose, onRegister }) => {
     
     try {
       if (onRegister) {
-        await onRegister(formData.username, formData.email, formData.password);
+        await onRegister(formData.username, formData.password, setSuccess);
         // Clear form on success
         setFormData({
           username: '',
-          email: '',
           password: '',
           confirmPassword: ''
         });
@@ -143,23 +136,6 @@ const Register = ({ onClose, onRegister }) => {
           <div className="input-group">
             <div className="input-wrapper">
               <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`register-input ${errors.email ? 'error' : ''}`}
-                placeholder="Email"
-                required
-              />
-              <div className="input-border"></div>
-              <div className="input-icon">📧</div>
-            </div>
-            {errors.email && <span className="error-text">{errors.email}</span>}
-          </div>
-
-          <div className="input-group">
-            <div className="input-wrapper">
-              <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
@@ -207,9 +183,13 @@ const Register = ({ onClose, onRegister }) => {
           <button 
             type="submit" 
             className={`register-button ${isSubmitting ? 'loading' : ''}`}
-            disabled={isSubmitting}
+            disabled={isSubmitting || success}
           >
-            {isSubmitting ? (
+            {success ? (
+              <div className="button-content" style={{ color: '#68d391', fontWeight: 700 }}>
+                <span>✅ You successfully signed up!</span>
+              </div>
+            ) : isSubmitting ? (
               <div className="button-content">
                 <div className="spinner"></div>
                 <span>Signing Up...</span>
