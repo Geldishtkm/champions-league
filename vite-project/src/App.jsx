@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PlayerList from './PlayerList';
-import PlayerForm from './PlayerForm';
 import MyTeam from './MyTeam';
 import StartingXI from './StartingXI';
 import ChampionsLogo from './ChampionsLogo';
@@ -57,7 +56,6 @@ function App() {
   const [selectedFormation, setSelectedFormation] = useState('5-3-2');
   const [myTeam, setMyTeam] = useState(FORMATIONS['5-3-2'].map(slot => ({ ...slot, player: null })));
   const [bench, setBench] = useState([]); // array of player objects
-  const [searchTerm, setSearchTerm] = useState('');
   const [players, setPlayers] = useState([]);
   const [frontendStartingXI, setFrontendStartingXI] = useState([]); // array of player objects (frontend-only)
   const [editingPlayer, setEditingPlayer] = useState(null);
@@ -76,33 +74,7 @@ function App() {
     setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
 
-  // Login handler
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoginError('');
-    try {
-      const response = await fetch('http://localhost:8080/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const text = await response.text();
-      if (response.ok) {
-        setIsLoggedIn(true);
-        setActiveTab('player-list');
-        // Fetch userId after successful login
-        const userInfoRes = await fetch(`http://localhost:8080/api/users/by-username/${username}`);
-        if (userInfoRes.ok) {
-          const userInfo = await userInfoRes.json();
-          setUserId(userInfo.id);
-        }
-      } else {
-        setLoginError(text); // Shows "Username not found" or "Incorrect password"
-      }
-    } catch (err) {
-      setLoginError('Network error. Please check your connection.');
-    }
-  };
+
 
   // Fetch all players
   const fetchPlayers = async () => {
@@ -326,31 +298,7 @@ function App() {
     }
   };
 
-  // Delete player (DELETE)
-  const deletePlayer = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this player?')) {
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      const response = await fetch(`http://localhost:8080/champ/v1/player/${id}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      await fetchPlayers();
-      showMessage('success', 'Player deleted successfully!');
-    } catch (err) {
-      console.error('Error deleting player:', err);
-      showMessage('error', 'Failed to delete player. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   // Update myTeam slots when formation changes
   useEffect(() => {
@@ -545,18 +493,6 @@ function App() {
     showMessage('info', 'All data cleared for testing!');
   };
 
-  // Handle edit player - set editing player and switch to add player tab
-  const handleEditPlayer = (player) => {
-    setEditingPlayer(player);
-    setActiveTab('add-player');
-  };
-
-  const filteredPlayers = players.filter(player =>
-    player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    player.team.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    player.nationality.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const tabs = [
     { id: 'player-list', label: 'Player List', icon: '👥' },
     { id: 'starting-xi', label: 'Starting XI', icon: '⚽' },
@@ -570,14 +506,11 @@ function App() {
       case 'player-list':
         return (
           <PlayerList 
-            players={filteredPlayers} 
+            players={players} 
             onAddPlayer={addPlayerToBench}
             mainTeamIds={myTeam.filter(slot => slot.player).map(slot => slot.player.id)}
             benchIds={bench.map(p => p.id)}
             benchFull={bench.length >= 23}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onDeletePlayer={deletePlayer}
             frontendStartingXI={frontendStartingXI}
             onAddToFrontendStartingXI={addToFrontendStartingXI}
             loading={loading}

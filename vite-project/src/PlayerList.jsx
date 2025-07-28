@@ -273,7 +273,7 @@ const EmptyState = ({ message }) => (
 );
 
 // Simplified Player Card Component
-const PlayerCard = ({ player, onAddToBench, onAddToStartingXI, onDeletePlayer, isInStartingXI, showDeleteButton = false }) => {
+const PlayerCard = ({ player, onAddToBench, onAddToStartingXI, isInStartingXI }) => {
   const handleAddToBench = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -292,13 +292,7 @@ const PlayerCard = ({ player, onAddToBench, onAddToStartingXI, onDeletePlayer, i
     }
   };
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (onDeletePlayer) {
-      onDeletePlayer(player.id);
-    }
-  };
+
 
   return (
     <div 
@@ -498,36 +492,7 @@ const PlayerCard = ({ player, onAddToBench, onAddToStartingXI, onDeletePlayer, i
           </button>
         )}
         
-        {showDeleteButton && onDeletePlayer && (
-          <button 
-            onClick={handleDelete}
-            aria-label={`Delete ${player.name}`}
-            style={{
-              padding: '10px 16px',
-              fontSize: '14px',
-              fontWeight: '600',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
-              color: '#fff',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(220, 53, 69, 0.3)',
-              transition: 'all 0.3s ease',
-              flex: 1,
-              minWidth: '120px',
-            }}
-            onMouseOver={e => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)';
-            }}
-            onMouseOut={e => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 16px rgba(220, 53, 69, 0.3)';
-            }}
-          >
-            Delete
-          </button>
-        )}
+
       </div>
     </div>
   );
@@ -539,9 +504,6 @@ const PlayerList = ({
   mainTeamIds = [], 
   benchIds = [], 
   benchFull = false,
-  searchTerm,
-  onSearchChange,
-  onDeletePlayer,
   startingXI,
   updateStartingXI,
   frontendStartingXI = [],
@@ -996,9 +958,7 @@ const PlayerList = ({
                   player={player}
                   onAddToBench={onAddPlayer}
                   onAddToStartingXI={onAddToFrontendStartingXI}
-                  onDeletePlayer={onDeletePlayer}
                   isInStartingXI={isInStartingXI}
-                  showDeleteButton={false}
                 />
               );
             })}
@@ -1032,9 +992,7 @@ const PlayerList = ({
                   player={player}
                   onAddToBench={onAddPlayer}
                   onAddToStartingXI={onAddToFrontendStartingXI}
-                  onDeletePlayer={onDeletePlayer}
                   isInStartingXI={isInStartingXI}
-                  showDeleteButton={false}
                 />
               );
             })}
@@ -1068,9 +1026,7 @@ const PlayerList = ({
                   player={player}
                   onAddToBench={onAddPlayer}
                   onAddToStartingXI={onAddToFrontendStartingXI}
-                  onDeletePlayer={onDeletePlayer}
                   isInStartingXI={isInStartingXI}
-                  showDeleteButton={false}
                 />
               );
             })}
